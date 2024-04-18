@@ -1,5 +1,6 @@
 import '../style/login.css'
 import { useState } from 'react';
+import { Link } from "react-router-dom";
 //import { useHistory } from 'react-router-dom';
 
 export function Login({setUser}){
@@ -45,8 +46,15 @@ export function Login({setUser}){
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Password"
                 />
-            <button type="submit">Iniciar sesion</button>
-            <button type="submit" >Crear cuenta</button>
+
+            <Link to="/home">
+                <button type="submit">Iniciar sesion</button>
+            </Link>
+            
+            <Link to="/register">
+                <button type="submit" >Crear cuenta</button>
+            </Link>
+            
             
             </form>
             {error && <p>Los campos son obligatorios</p>}

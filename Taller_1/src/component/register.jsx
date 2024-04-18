@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from "react-router-dom";
 
 export function Register({ setUser }) {
     const [name, setName] = useState('');
@@ -45,7 +46,10 @@ export function Register({ setUser }) {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
             />
-            <button type="submit">Registrase</button>
+            <Link to="/login">
+                <button type="submit">Registrase</button>
+            </Link>
+            
         </form>
         {error && <p>Todos los campos son requeridos</p>}
         </section>
