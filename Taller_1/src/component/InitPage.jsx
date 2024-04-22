@@ -9,7 +9,7 @@ export function InitPage() {
             Bienvenido
         </h1>
         <Link to="/login">
-        <button>
+        <button className="p-6">
             Iniciar Sesion
         </button>
         </Link>
