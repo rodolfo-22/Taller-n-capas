@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate} from "react-router-dom";
 import {Popup} from './utils/GlobalPopUpMessage';
+import axios from 'axios';
 
 export function Register() {
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
+    const [firstname, setFirstname] = useState('');
+    const [lastname, setLastname] = useState('');
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [country, setCountry] = useState('');
     const [showPopup, setShowPopup] = useState(false);
     const [popUpMessage, setPopUpMessage] = useState("");
     const navigate = useNavigate();
@@ -21,20 +24,24 @@ export function Register() {
     } return () => clearTimeout(timer);
     }, [showPopup]);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         const User = {
-            name,
-            email,
-            password
+            firstname,
+            lastname,
+            username,
+            password,
+            country
         }
 
-        const response = fetch('Aqui va la direccion de la API', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(User)
-        })
+        const response = await axios.post('http://localhost:8080/auth/register', {
+            username,
+            password,
+            firstname,
+            lastname, 
+            country
+        });
 
         if(!response.ok){
             if(response.status === 400){
@@ -48,7 +55,7 @@ export function Register() {
                 setShowPopup(true)
             }
         }
-        if(response.status === 201){
+        if(response.status === 200){
             setPopUpMessage("Usuario registrado")
             setShowPopup(true)
             navigate("/login");
@@ -68,24 +75,37 @@ export function Register() {
         >
 
             <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Name"
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Username"
             />
             <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Password"
             />
             <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
+                type="text"
+                value={firstname}
+                onChange={(e) => setFirstname(e.target.value)}
+                placeholder="Firstname"
             />
-                <button type="submit">Registrarse</button>
+            <input
+                type="text"
+                value={lastname}
+                onChange={(e) => setLastname(e.target.value)}
+                placeholder="Lastname"
+            />
+
+            <input
+                type="text"
+                value={country}
+                onChange={(e) => setCountry(e.target.value)}
+                placeholder="Country"
+            />
+            <button type="submit">Registrarse</button>
             
         </form>
         </section>
