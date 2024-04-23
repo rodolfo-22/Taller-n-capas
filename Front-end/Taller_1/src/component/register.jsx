@@ -6,7 +6,7 @@ import axios from 'axios';
 export function Register() {
     const [firstname, setFirstname] = useState('');
     const [lastname, setLastname] = useState('');
-    const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [country, setCountry] = useState('');
     const [showPopup, setShowPopup] = useState(false);
@@ -30,13 +30,13 @@ export function Register() {
         const User = {
             firstname,
             lastname,
-            email,
+            username,
             password,
             country
         }
 
         const response = await axios.post('http://localhost:8080/auth/register', {
-            email,
+            username,
             password,
             firstname,
             lastname, 
@@ -76,8 +76,8 @@ export function Register() {
 
             <input
                 type="text"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 placeholder="Username"
             />
             <input

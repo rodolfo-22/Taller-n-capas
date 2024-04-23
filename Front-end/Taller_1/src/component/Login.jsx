@@ -5,7 +5,7 @@ import { Popup } from './utils/GlobalPopUpMessage';
 import axios from 'axios';
 
 export function Login({ setUser }) {
-    const [email, setEmail] = useState("");
+    const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [showPopup, setShowPopup] = useState(false);
     const [popUpMessage, setPopUpMessage] = useState("");
@@ -26,7 +26,7 @@ export function Login({ setUser }) {
 
         try {
             const response = await axios.post('http://localhost:8080/auth/login', {
-                email,
+                username,
                 password
             });
 
@@ -34,7 +34,7 @@ export function Login({ setUser }) {
                 const token = response.data.token;
                 console.log(token);
                 localStorage.setItem('token', token);
-                setUser(email, password);
+                setUser(username, password);
                 navigate("/home");
             }
         } catch (error) {
@@ -43,7 +43,7 @@ export function Login({ setUser }) {
                 let errorMessage = "Error desconocido";
 
                 if (status === 400) {
-                    errorMessage = "email o contraseña incorrectas";
+                    errorMessage = "username o contraseña incorrectas";
                 } else if (status === 404) {
                     errorMessage = "No se ha encontrado al usuario";
                 } else if (status === 401) {
@@ -68,9 +68,9 @@ export function Login({ setUser }) {
             >
                 <input
                     type="text"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="email"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    placeholder="username"
                 />
                 <input
                     type="password"
