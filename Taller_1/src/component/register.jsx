@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Link } from "react-router-dom";
-import {PopUp} from './utils/GlobalPopUpMessage';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate} from "react-router-dom";
+import {Popup} from './utils/GlobalPopUpMessage';
 
 export function Register() {
     const [name, setName] = useState('');
@@ -8,6 +8,7 @@ export function Register() {
     const [password, setPassword] = useState('');
     const [showPopup, setShowPopup] = useState(false);
     const [popUpMessage, setPopUpMessage] = useState("");
+    const navigate = useNavigate();
 
 
     // Handling del popup para el mensaje de error
@@ -36,12 +37,21 @@ export function Register() {
         })
 
         if(!response.ok){
-            const data = response.json()
-            // Aqui va el handling del status del http code que envie la API...
-
-            // Luego aqui va para que aparezca el mensaje de error
-            // setPopUpMessage("Mensaje") <----- Descomentar esto para usarlo en los ifs segun el http code
+            if(response.status === 400){
+                setPopUpMessage("Datos incorrectos")
+                setShowPopup(true)
+            } else if (response.status === 409){
+                setPopUpMessage("Conflicto con datos en el servidor")
+                setShowPopup(true)
+            } else if (response.status === 500){
+                setPopUpMessage("El servidor no ha podido hacer la peticion")
+                setShowPopup(true)
+            }
+        }
+        if(response.status === 201){
+            setPopUpMessage("Usuario registrado")
             setShowPopup(true)
+            navigate("/login");
         }
          
     };
@@ -49,7 +59,8 @@ export function Register() {
     return (
         <section>
         <h1>Register</h1>
-        {showPopup && <PopUp message={popUpMessage}/>}
+        {showPopup && <Popup message={popUpMessage}/>}
+        
 
         <form
             className="formulario"
@@ -74,9 +85,7 @@ export function Register() {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
             />
-            <Link to="/login">
-                <button type="submit">Registrase</button>
-            </Link>
+                <button type="submit">Registrarse</button>
             
         </form>
         </section>

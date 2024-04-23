@@ -1,7 +1,7 @@
 import '../style/login.css'
 import { useState, useEffect } from 'react';
-import { Link } from "react-router-dom";
-import {PopUp} from './utils/GlobalPopUpMessage';
+import { Link, redirect, useNavigate } from "react-router-dom";
+import {Popup} from './utils/GlobalPopUpMessage';
 //import { useHistory } from 'react-router-dom';
 
 export function Login({setUser, User}){
@@ -9,6 +9,7 @@ export function Login({setUser, User}){
     const [password, setPassword] = useState("");
     const [showPopup, setShowPopup] = useState(false);
     const [popUpMessage, setPopUpMessage] = useState("");
+    const navigate = useNavigate();
 
 
   // Handling del popup para el mensaje de error
@@ -25,7 +26,6 @@ export function Login({setUser, User}){
         e.preventDefault()
 
         setUser(email, password);
-        
         const response = fetch('Aqui va la direccion de la API', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
@@ -33,20 +33,31 @@ export function Login({setUser, User}){
         })
 
         if(!response.ok){
-            const data = response.json()
-            // Aqui va el handling del status del http code que envie la API...
-
-            // Luego aqui va para que aparezca el mensaje de error
-            // setPopUpMessage("Mensaje") <----- Descomentar esto para usarlo en los ifs segun el http code
-            setShowPopup(true)
+            if(response.status === 400){
+                setPopUpMessage("Email o contraseña incorrectas")
+                setShowPopup(true)
+            } else if (response.status === 404){
+                setPopUpMessage("No se ha encontrado al usuario")
+                setShowPopup(true)
+            } else if (response.status === 401){
+                setPopUpMessage("Usuario no autorizado")
+                setShowPopup(true)
+            } else if (response.status === 500){
+                setPopUpMessage("El servidor no ha podido hacer la peticion")
+                setShowPopup(true)
+            }
+        } else if (response.status === 200){
+            navigate("/home");
         }
+        
+
+        
     }
 
     return(
         <section>
             <h1>Login</h1>
-            {showPopup && <PopUp message={popUpMessage}/>}
-
+            {showPopup && <Popup message={popUpMessage}/>}
             <form 
                 className="formulario"
                 onSubmit={handleSubmit}
@@ -70,12 +81,12 @@ export function Login({setUser, User}){
             </Link>
             <button type="submit">Iniciar sesion</button>
             <Link to="/register">
-                <button type="submit" >Crear cuenta</button>
+                <button type="button" >Crear cuenta</button>
             </Link>
             
             
             </form>
-            {error && <p>Los campos son obligatorios</p>}
+            
         </section>
         
     )
